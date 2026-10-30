@@ -1,0 +1,48 @@
+---
+import Breadcrumb from './Breadcrumb.astro';
+
+interface AsideLink {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  title: string;
+  lead?: string;
+  eyebrow?: string;
+  breadcrumb: { label: string; href?: string }[];
+  asideHeading?: string;
+  asideLinks?: AsideLink[];
+}
+
+const { title, lead, eyebrow, breadcrumb, asideHeading, asideLinks } = Astro.props;
+const showAside = Boolean(asideLinks && asideLinks.length > 0);
+---
+
+<header class="page-hero">
+  <div class="container">
+    <Breadcrumb items={breadcrumb} />
+    <div class="page-hero__grid">
+      <div>
+        {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+        <h1>{title}</h1>
+        {lead && <p class="lede">{lead}</p>}
+        <slot />
+      </div>
+      {
+        showAside && (
+          <aside class="page-hero__aside" aria-label={asideHeading ?? 'On this page'}>
+            <h2>{asideHeading ?? 'On this page'}</h2>
+            <ul>
+              {asideLinks?.map((link) => (
+                <li>
+                  <a href={link.href}>{link.label}</a>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )
+      }
+    </div>
+  </div>
+</header>

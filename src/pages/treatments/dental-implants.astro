@@ -1,0 +1,11 @@
+---
+import TreatmentPage from '../../components/TreatmentPage.astro';
+import ImplantExplorer from '../../components/ImplantExplorer.astro';
+import { getTreatment } from '../../data/treatments';
+
+const treatment = getTreatment('dental-implants');
+---
+
+<TreatmentPage treatment={treatment}>
+  <ImplantExplorer slot="explorer" />
+</TreatmentPage>

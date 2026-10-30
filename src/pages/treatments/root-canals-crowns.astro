@@ -1,0 +1,8 @@
+---
+import TreatmentPage from '../../components/TreatmentPage.astro';
+import { getTreatment } from '../../data/treatments';
+
+const treatment = getTreatment('root-canals-crowns');
+---
+
+<TreatmentPage treatment={treatment} />

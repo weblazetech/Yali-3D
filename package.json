@@ -1,0 +1,25 @@
+{
+  "name": "yali-dental-clinic",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Yali Dental Clinic website. Static Astro site with a deferred Three.js hero, a bounded GSAP treatment story and an implant explorer.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.4.4",
+    "gsap": "^3.15.0",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@types/three": "^0.186.0",
+    "typescript": "^5.9.3"
+  }
+}

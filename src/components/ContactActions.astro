@@ -1,0 +1,46 @@
+---
+import Icon from './Icon.astro';
+import { telHref, whatsappHref, clinic } from '../data/site';
+
+interface Props {
+  variant?: 'primary' | 'secondary' | 'ghost';
+  showCall?: boolean;
+  showWhatsApp?: boolean;
+  class?: string;
+}
+
+const { variant = 'primary', showCall = true, showWhatsApp = true, class: className } = Astro.props;
+const callVisible = showCall && Boolean(telHref);
+const whatsappVisible = showWhatsApp && Boolean(whatsappHref);
+---
+
+{
+  callVisible || whatsappVisible ? (
+    <ul class:list={['actions', 'contact-actions', className]} data-contact-actions>
+      {callVisible && (
+        <li>
+          <a class:list={['btn', `btn--${variant}`]} href={telHref} data-contact="phone">
+            <Icon name="phone" class="btn__icon" />
+            Call {clinic.shortName}
+            <span class="sr-only">(opens your phone app)</span>
+          </a>
+        </li>
+      )}
+      {whatsappVisible && (
+        <li>
+          <a
+            class:list={['btn', `btn--${variant}`]}
+            href={whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-contact="whatsapp"
+          >
+            <Icon name="whatsapp" class="btn__icon" />
+            WhatsApp {clinic.shortName}
+            <span class="sr-only">(opens WhatsApp in a new tab)</span>
+          </a>
+        </li>
+      )}
+    </ul>
+  ) : null
+}

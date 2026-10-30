@@ -1,0 +1,85 @@
+---
+import Crest from './Crest.astro';
+import { clinic, primaryNav, hasContactChannel, publicAddress, publicHours, statusLabel, isPrelaunch } from '../data/site';
+import { treatments } from '../data/treatments';
+
+const year = new Date().getFullYear();
+const footerNote = isPrelaunch
+  ? 'Address, consultation hours, and contact details will be published once the clinic has confirmed them.'
+  : publicAddress
+    ? 'Clinic address, consultation hours, and directions are published on the contact page.'
+    : 'Clinic contact details are published on the contact page.';
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <div class="footer__brand-top">
+          <Crest size={58} class="footer__crest" />
+          <span class="footer__name">YALI DENTAL CLINIC</span>
+        </div>
+        <p class="footer__tagline">{clinic.tagline}</p>
+        <p class="footer__note">{statusLabel} {footerNote}</p>
+        <p class="footer__note">
+          This website provides general information about dental care. It is not a diagnosis, and it does not replace an
+          assessment.
+        </p>
+      </div>
+
+      <nav class="footer__col" aria-label="Footer">
+        <h2>Explore</h2>
+        <ul>
+          <li><a href="/">Home</a></li>
+          {
+            primaryNav.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))
+          }
+          <li><a href="/privacy">Privacy</a></li>
+        </ul>
+      </nav>
+
+      <div class="footer__col">
+        <h2>Treatments</h2>
+        <ul>
+          {
+            treatments.map((treatment) => (
+              <li>
+                <a href={treatment.href}>{treatment.cardTitle}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h2>Contact</h2>
+        <div class="footer__status">
+          <p><strong>{clinic.city}</strong></p>
+          {
+            hasContactChannel ? (
+              <p>
+                Call or WhatsApp details are published on the <a href="/contact">contact page</a>.
+              </p>
+            ) : (
+              <p>
+                Verified call and WhatsApp details are not published yet.{' '}
+                <a href="/contact">See the current contact status</a>.
+              </p>
+            )
+          }
+          {publicAddress && <p>{publicAddress.join(', ')}</p>}
+          {publicHours && <p>{publicHours.map((entry) => `${entry.label}: ${entry.value}`).join(' · ')}</p>}
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <p>© {year} {clinic.name}. {clinic.tagline}</p>
+      <p><a href="/privacy">Privacy</a></p>
+    </div>
+  </div>
+</footer>

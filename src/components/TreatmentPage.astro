@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from './PageHeader.astro';
+import FaqList from './FaqList.astro';
+import EnquiryPanel from './EnquiryPanel.astro';
+import Icon from './Icon.astro';
+import { getTreatment } from '../data/treatments';
+import type { Treatment } from '../data/types';
+
+interface Props {
+  treatment: Treatment;
+}
+
+const { treatment } = Astro.props;
+
+const asideLinks = [
+  ...treatment.sections.map((section) => ({ label: section.label, href: `#${section.id}` })),
+  { label: 'Questions', href: '#questions' },
+];
+
+const related = treatment.related.map((slug) => getTreatment(slug));
+---
+
+<BaseLayout title={treatment.metaTitle} description={treatment.metaDescription}>
+  <PageHeader
+    title={treatment.title}
+    lead={treatment.lead}
+    breadcrumb={[
+      { label: 'Home', href: '/' },
+      { label: 'Treatments', href: '/treatments' },
+      { label: treatment.cardTitle },
+    ]}
+    asideLinks={asideLinks}
+  />
+
+  <section class="section section--tight" aria-label={`About ${treatment.title}`}>
+    <div class="container">
+      <slot name="explorer" />
+
+      <div class="treatment-sections">
+        {
+          treatment.sections.map((section) => (
+            <section class="treatment-section" id={section.id} aria-labelledby={`${section.id}-heading`}>
+              <div>
+                <p class="treatment-section__label">{section.label}</p>
+                <h2 id={`${section.id}-heading`}>{section.heading}</h2>
+              </div>
+              <div class="treatment-section__body">
+                {section.paragraphs?.map((paragraph) => (
+                  <p>{paragraph}</p>
+                ))}
+                {section.blocks?.map((block) => (
+                  <div class="treatment-block">
+                    <h3>{block.heading}</h3>
+                    {block.paragraphs.map((paragraph) => (
+                      <p>{paragraph}</p>
+                    ))}
+                  </div>
+                ))}
+                {section.list && (
+                  <ul>
+                    {section.list.map((item) => (
+                      <li>{item}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </section>
+          ))
+        }
+      </div>
+
+      <div class="notice" style="margin-top:2rem">
+        <p>
+          <strong>General information.</strong> This page explains a treatment area, not a diagnosis. Suitability and
+          planning are confirmed through an assessment.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sand" id="questions" aria-labelledby="questions-heading">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Questions</p>
+        <h2 id="questions-heading">Common questions about {treatment.cardTitle.toLowerCase()}</h2>
+      </div>
+      <FaqList items={treatment.faqs} />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="enquiry-heading">
+    <div class="container">
+      <div class="contact-grid">
+        <EnquiryPanel />
+        <div class="related">
+          <h2 class="eyebrow" style="font-family:var(--font-body)">Related care</h2>
+          <ul>
+            {
+              related.map((item) => (
+                <li>
+                  <a href={item.href}>
+                    {item.cardTitle}
+                    <Icon name="arrow-right" size={16} />
+                  </a>
+                </li>
+              ))
+            }
+            <li>
+              <a href="/treatments">
+                All treatments
+                <Icon name="arrow-right" size={16} />
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

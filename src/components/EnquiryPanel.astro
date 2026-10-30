@@ -1,0 +1,49 @@
+---
+import Icon from './Icon.astro';
+import ContactActions from './ContactActions.astro';
+import { hasContactChannel, isPrelaunch, statusLabel } from '../data/site';
+
+interface Props {
+  heading?: string;
+  body?: string;
+  /** Optional note shown under the actions. */
+  note?: string;
+  variant?: 'sand' | 'plain';
+}
+
+const defaultBody = hasContactChannel
+  ? 'Call or send a short WhatsApp message to ask about an appointment. The clinic confirms appointments manually after an enquiry.'
+  : isPrelaunch
+    ? 'Contact details are being confirmed before the clinic opens. Once a verified number is published, you will be able to call or send a short WhatsApp message. Appointments are confirmed manually after an enquiry.'
+    : 'Verified contact details are being updated. The contact page explains what is confirmed and when call and WhatsApp actions become available.';
+
+const {
+  heading = 'Speak to Yali',
+  body = defaultBody,
+  note = 'The website does not collect symptoms or store patient information.',
+  variant = 'sand',
+} = Astro.props;
+---
+
+<section class:list={['enquiry', variant === 'plain' && 'enquiry--plain']} aria-labelledby="enquiry-heading">
+  <p class="enquiry__status">{statusLabel}</p>
+  <h2 id="enquiry-heading">{heading}</h2>
+  <p>{body}</p>
+  {
+    hasContactChannel ? (
+      <ContactActions />
+    ) : (
+      <div class="actions">
+        <a class="btn btn--primary" href="/contact">
+          See contact status
+          <Icon name="arrow-right" class="btn__icon" />
+        </a>
+        <a class="link-arrow" href="/your-visit">
+          What happens at a first visit
+          <Icon name="arrow-right" size={16} />
+        </a>
+      </div>
+    )
+  }
+  <p class="muted" style="font-size:0.85rem">{note}</p>
+</section>

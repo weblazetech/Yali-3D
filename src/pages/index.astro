@@ -1,0 +1,197 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import TreatmentStory from '../components/TreatmentStory.astro';
+import VisitStepper from '../components/VisitStepper.astro';
+import FaqList from '../components/FaqList.astro';
+import EnquiryPanel from '../components/EnquiryPanel.astro';
+import ContactActions from '../components/ContactActions.astro';
+import { treatments } from '../data/treatments';
+import { carePrinciples } from '../data/about';
+import { doctor } from '../data/doctor';
+import { homeFaqs, homeVisitStages } from '../data/visit';
+import { hasContactChannel, isPrelaunch, statusLabel, statusDetail } from '../data/site';
+
+const metaDescription = isPrelaunch
+  ? 'Yali Dental Clinic is opening in Hyderabad. Root canal treatment, crowns, dental implants, and oral and maxillofacial care, guided by Dr. B. V. Ramakrishna Reddy.'
+  : 'Yali Dental Clinic in Hyderabad. Root canal treatment, crowns, dental implants, and oral and maxillofacial care, guided by Dr. B. V. Ramakrishna Reddy.';
+---
+
+<BaseLayout description={metaDescription}>
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="container hero__grid">
+      <div class="hero__copy">
+        <p class="hero__status">
+          <strong>{statusLabel}</strong>
+          <span>{statusDetail}</span>
+        </p>
+        <h1 id="hero-heading">Thoughtful dental care for you and your family.</h1>
+        <p class="hero__lede">
+          Root canal treatment, crowns, implants, and surgical care, guided by Dr. B. V. Ramakrishna Reddy.
+        </p>
+        <div class="actions hero__actions">
+          <a class="btn btn--primary" href="/treatments">
+            Explore treatments
+            <Icon name="arrow-right" class="btn__icon" />
+          </a>
+          <a class="btn btn--secondary" href="/your-visit">Plan your first visit</a>
+        </div>
+        {
+          hasContactChannel ? (
+            <div class="hero__contact-actions">
+              <ContactActions variant="ghost" />
+            </div>
+          ) : (
+            <p class="hero__contact-note">
+              Verified call and WhatsApp details are not published yet.
+              <a href="/contact">See contact status</a>
+            </p>
+          )
+        }
+      </div>
+
+      <div class="hero__stage">
+        <div class="stage" data-hero-stage>
+          <div class="stage__canvas" data-hero-canvas></div>
+          <div class="stage__still">
+            <img
+              src="/images/fallback/molar.webp"
+              width="900"
+              height="1091"
+              alt="Stylised ivory molar above a sand stage, framed by a terracotta arch."
+              fetchpriority="high"
+              decoding="async"
+            />
+          </div>
+        </div>
+        <p class="stage-caption">
+          <strong>Original illustration.</strong>
+          <span data-hero-caption-note>Original 3D illustration. Move your cursor across the stage to shift the angle.</span>
+        </p>
+        <p class="sr-only">
+          A stylised ivory molar with two roots sits on a sand stage inside a terracotta arch. It is an illustration, not
+          a clinical image or a photograph of a patient.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="dr-reddy" aria-labelledby="doctor-heading">
+    <div class="container doctor">
+      <div class="doctor__mark" aria-hidden="true">
+        <span class="doctor__monogram">BVR</span>
+        <span class="doctor__mark-caption">Implant and surgical dentistry</span>
+      </div>
+      <div class="doctor__body">
+        <p class="eyebrow">Meet your dentist</p>
+        <h2 id="doctor-heading">Care led by Dr. B. V. Ramakrishna Reddy</h2>
+        <p>{doctor.intro}</p>
+        <p>
+          His implant and surgical experience informs how complex cases are assessed, when a tooth can be kept, and when
+          care is better provided in a hospital or through another specialist.
+        </p>
+        <ul class="doctor__focus">
+          {doctor.focus.map((item) => <li>{item}</li>)}
+        </ul>
+        <a class="link-arrow" href="/about">
+          Read about Dr. Reddy and Yali
+          <Icon name="arrow-right" size={16} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <TreatmentStory />
+
+  <section class="section section--flush-top" id="treatment-links" tabindex="-1" aria-labelledby="treatment-links-heading">
+    <div class="container">
+      <div class="section-head__row">
+        <div class="section-head">
+          <p class="eyebrow">Treatment information</p>
+          <h2 id="treatment-links-heading">Where each chapter leads</h2>
+        </div>
+        <a class="link-arrow" href="/treatments">
+          All treatments
+          <Icon name="arrow-right" size={16} />
+        </a>
+      </div>
+      <div class="treatment-list">
+        {
+          treatments.map((treatment) => (
+            <a class="treatment-row" href={treatment.href}>
+              <h3>{treatment.cardTitle}</h3>
+              <p>{treatment.summary}</p>
+              <span class="treatment-row__arrow" aria-hidden="true">
+                <Icon name="arrow-right" size={16} />
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sand" aria-labelledby="principles-heading">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">What matters at Yali</p>
+        <h2 id="principles-heading">Care planned around the person</h2>
+        <p class="lede">
+          Four commitments shape how the clinic works. They are practical, checkable, and part of the plan for opening.
+        </p>
+      </div>
+      <div class="principles">
+        {
+          carePrinciples.map((principle) => (
+            <article class="principle">
+              <p class="principle__index" aria-hidden="true">{principle.index}</p>
+              <h3>{principle.title}</h3>
+              <p>{principle.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="visit-heading">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Your first visit</p>
+        <h2 id="visit-heading">A clear four-stage start</h2>
+        <p class="lede">
+          A first appointment should leave you understanding the problem, the options, and what happens next.
+        </p>
+      </div>
+      <VisitStepper stages={homeVisitStages} idPrefix="home-visit" label="Stages of a first visit" />
+      <p style="margin-top:2rem">
+        <a class="link-arrow" href="/your-visit">
+          More about your visit, before and after
+          <Icon name="arrow-right" size={16} />
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--sand" aria-labelledby="faq-heading">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Questions</p>
+        <h2 id="faq-heading">Useful questions</h2>
+        <p class="lede">Short answers to what patients usually ask before contacting a new clinic.</p>
+      </div>
+      <FaqList items={homeFaqs} />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="enquiry-heading">
+    <div class="container container--narrow">
+      <EnquiryPanel heading="Contact Yali" />
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import '../scripts/story';
+  import '../scripts/home-3d';
+</script>

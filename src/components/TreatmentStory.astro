@@ -1,0 +1,143 @@
+---
+import Icon from './Icon.astro';
+
+const chapters = [
+  {
+    index: '01',
+    id: 'exploring',
+    label: 'Exploring dental care',
+    heading: 'Start with an assessment, not a guess',
+    body: 'Understanding what is happening in your mouth is the first step. An assessment looks at the tooth, the gum, your bite, and your medical history before any treatment is suggested.',
+    links: [
+      { label: 'All treatments', href: '/treatments' },
+      { label: 'What a first visit involves', href: '/your-visit' },
+    ],
+  },
+  {
+    index: '02',
+    id: 'restoring',
+    label: 'Restoring damaged teeth',
+    heading: 'Keep the tooth where possible',
+    body: 'When a tooth is infected or damaged, the aim is to keep it. Root canal treatment addresses the inside of the tooth; a crown restores its shape and strength. The two are sometimes planned together.',
+    links: [{ label: 'Root canal treatment and crowns', href: '/treatments/root-canals-crowns' }],
+  },
+  {
+    index: '03',
+    id: 'replacing',
+    label: 'Replacing missing teeth',
+    heading: 'Replace what has been lost',
+    body: 'A missing tooth can change how you eat and speak. An implant, a bridge, or a removable denture can replace it, and the trade-offs are discussed after assessment.',
+    links: [
+      { label: 'Dental implants', href: '/treatments/dental-implants' },
+      { label: 'Oral and maxillofacial care', href: '/treatments/oral-maxillofacial-care' },
+    ],
+  },
+];
+---
+
+<section class="section section--tight story" id="care" aria-labelledby="care-heading" data-story data-active-chapter="0">
+  <div class="container">
+    <div class="story__pin" data-story-pin>
+      <div class="story__content">
+        <div class="story__head">
+          <p class="eyebrow">Explore your care</p>
+          <h2 id="care-heading">Three chapters, one way of planning care</h2>
+          <p>
+            Choose a chapter to see the part of care it describes. The sequence moves from understanding the problem,
+            to restoring a tooth, to replacing one.
+          </p>
+        </div>
+
+        <div class="story__chapters" data-story-chapters>
+          {
+            chapters.map((chapter, index) => (
+              <button
+                type="button"
+                class="chapter"
+                id={`story-tab-${index}`}
+                aria-selected={index === 0 ? 'true' : 'false'}
+                aria-controls={`story-panel-${index}`}
+                tabindex={index === 0 ? 0 : -1}
+                data-chapter={index}
+              >
+                <span class="chapter__num" aria-hidden="true">{chapter.index}</span>
+                <span class="chapter__label">{chapter.label}</span>
+              </button>
+            ))
+          }
+        </div>
+
+        <div class="story__panels">
+          {
+            chapters.map((chapter, index) => (
+              <div class="story-panel" id={`story-panel-${index}`} aria-label={chapter.label} data-story-panel>
+                <h3>{chapter.heading}</h3>
+                <p>{chapter.body}</p>
+                <div class="story-panel__links">
+                  {chapter.links.map((link) => (
+                    <a class="link-arrow" href={link.href}>
+                      {link.label}
+                      <Icon name="arrow-right" size={16} />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
+        </div>
+
+        <a class="link-arrow story__skip" href="#treatment-links" data-story-skip>
+          Skip animation and go to treatment information
+          <Icon name="arrow-down" size={16} />
+        </a>
+        <p class="story__status" data-story-status role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="story__stage">
+        <div class="stage" data-story-stage>
+          <div class="stage__canvas" data-story-canvas></div>
+          <div class="stage__still">
+            <img
+              src="/images/fallback/story-molar.webp"
+              width="900"
+              height="990"
+              alt="Stylised illustration of an ivory molar, used for the chapter on exploring dental care."
+              loading="lazy"
+              decoding="async"
+              data-story-img="0"
+            />
+            <img
+              src="/images/fallback/crown.webp"
+              width="900"
+              height="990"
+              alt="Stylised illustration of a crown restoration above a prepared tooth, used for the chapter on restoring damaged teeth."
+              loading="lazy"
+              decoding="async"
+              data-story-img="1"
+              hidden
+            />
+            <img
+              src="/images/fallback/implant.webp"
+              width="900"
+              height="990"
+              alt="Stylised illustration of an implant, connector and crown, used for the chapter on replacing missing teeth."
+              loading="lazy"
+              decoding="async"
+              data-story-img="2"
+              hidden
+            />
+          </div>
+        </div>
+        <p class="story__note">
+          <span data-story-caption-note>Original 3D illustration. Use the chapter buttons to change the view.</span>
+        </p>
+        <p class="sr-only">
+          A stylised 3D illustration changes with each chapter: a molar for exploring care, a crown over a prepared tooth
+          for restoring damaged teeth, and an implant supporting a crown for replacing missing teeth. The models are
+          illustrations, not clinical images.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+

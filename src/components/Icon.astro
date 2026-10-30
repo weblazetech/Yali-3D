@@ -1,0 +1,71 @@
+---
+export type IconName =
+  | 'arrow-right'
+  | 'arrow-down'
+  | 'arrow-up-right'
+  | 'phone'
+  | 'whatsapp'
+  | 'motion'
+  | 'rotate'
+  | 'reset'
+  | 'layers'
+  | 'external';
+
+interface Props {
+  name: IconName;
+  class?: string;
+  size?: number;
+}
+
+const { name, class: className, size = 24 } = Astro.props;
+---
+
+<svg
+  class={className}
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.7"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  {name === 'arrow-right' && <path d="M5 12h14M13 6l6 6-6 6" />}
+  {name === 'arrow-down' && <path d="M12 5v14M6 13l6 6 6-6" />}
+  {name === 'arrow-up-right' && <path d="M7 17 17 7M8 7h9v9" />}
+  {name === 'external' && <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />}
+  {name === 'phone' && (
+    <path d="M6.5 3h3l1.5 4-2 1.5a11 11 0 0 0 5.5 5.5L16 12l4 1.5v3a2 2 0 0 1-2.2 2A16 16 0 0 1 4 6.2 2 2 0 0 1 6.5 3Z" />
+  )}
+  {name === 'whatsapp' && (
+    <path d="M20.2 11.7a8.2 8.2 0 0 1-12.1 7.2L3.5 20.5l1.6-4.5A8.2 8.2 0 1 1 20.2 11.7Zm-11.7-3c-.2.4-.6 1.2-.2 2.1.5 1.2 1.7 2.8 3.5 3.6 1 .5 1.8.4 2.2.2l.9-.9-1.6-.8-.8.7a6 6 0 0 1-2.4-2.3l.7-.8-.8-1.6-.9.1Z" />
+  )}
+  {name === 'motion' && (
+    <>
+      <path d="M3 9c2.5-3 4.5-3 7 0s4.5 3 7 0" />
+      <path d="M3 15c2.5-3 4.5-3 7 0s4.5 3 7 0" opacity="0.45" />
+    </>
+  )}
+  {name === 'rotate' && (
+    <>
+      <path d="M20 12a8 8 0 1 1-2.6-5.9" />
+      <path d="M20 3v5h-5" />
+    </>
+  )}
+  {name === 'reset' && (
+    <>
+      <path d="M4 12a8 8 0 1 0 2.6-5.9" />
+      <path d="M4 3v5h5" />
+    </>
+  )}
+  {name === 'layers' && (
+    <>
+      <path d="m12 3 8 4.5-8 4.5-8-4.5L12 3Z" />
+      <path d="m4 12 8 4.5 8-4.5" />
+      <path d="m4 16.5 8 4.5 8-4.5" />
+    </>
+  )}
+</svg>

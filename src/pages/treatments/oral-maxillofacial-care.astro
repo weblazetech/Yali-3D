@@ -1,0 +1,8 @@
+---
+import TreatmentPage from '../../components/TreatmentPage.astro';
+import { getTreatment } from '../../data/treatments';
+
+const treatment = getTreatment('oral-maxillofacial-care');
+---
+
+<TreatmentPage treatment={treatment} />

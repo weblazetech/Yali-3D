@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import VisitStepper from '../components/VisitStepper.astro';
+import EnquiryPanel from '../components/EnquiryPanel.astro';
+import Icon from '../components/Icon.astro';
+import { beforeVisit, questionsToAsk, visitStages } from '../data/visit';
+---
+
+<BaseLayout
+  title="Your visit"
+  description="What to expect at a Yali Dental Clinic appointment: consultation, assessment, a discussion of options, planning, and follow-up, plus what to bring and questions worth asking."
+>
+  <PageHeader
+    title="Your visit"
+    lead="A first appointment is a conversation and an assessment. This page sets out what to expect, what to bring, and what happens after treatment."
+    breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Your visit' }]}
+    asideHeading="On this page"
+    asideLinks={[
+      { label: 'Before you come', href: '#before' },
+      { label: 'The five stages', href: '#stages' },
+      { label: 'Questions worth asking', href: '#questions' },
+      { label: 'Contact and enquiries', href: '#enquiry' },
+    ]}
+  />
+
+  <section class="section section--tight" id="before" aria-labelledby="before-heading">
+    <div class="container">
+      <div class="two-col">
+        <div>
+          <div class="section-head">
+            <p class="eyebrow">Before you come</p>
+            <h2 id="before-heading">A little preparation helps</h2>
+            <p class="lede">
+              You do not need to arrive with a diagnosis. Notes about what you have noticed, and any records you already
+              have, make the appointment more useful.
+            </p>
+          </div>
+          <ul class="check-list">
+            {beforeVisit.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <aside class="contact-aside">
+          <h2>If something is urgent</h2>
+          <p>
+            If you have facial swelling, difficulty breathing or swallowing, bleeding that does not stop, or severe pain
+            after an injury, seek urgent medical attention. This website is not an emergency service.
+          </p>
+          <p>
+            For other concerns, explain what you have noticed when you contact the clinic so the right appointment can be
+            arranged.
+          </p>
+          <a class="link-arrow" href="/contact">
+            Contact status
+            <Icon name="arrow-right" size={16} />
+          </a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sand" id="stages" aria-labelledby="stages-heading">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">The appointment</p>
+        <h2 id="stages-heading">Five stages, in order</h2>
+        <p class="lede">
+          Each stage has a purpose. You can ask for any part to be explained again, or pause before deciding.
+        </p>
+      </div>
+      <VisitStepper stages={visitStages} idPrefix="visit" label="Stages of a visit" />
+    </div>
+  </section>
+
+  <section class="section" id="questions" aria-labelledby="questions-heading">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Questions</p>
+        <h2 id="questions-heading">Questions worth asking</h2>
+        <p class="lede">
+          You do not need to know the answers before you arrive. These are reasonable questions at any appointment, and
+          asking them should be part of the conversation.
+        </p>
+      </div>
+      <ul class="question-grid">
+        {questionsToAsk.map((question) => <li>{question}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="enquiry" aria-labelledby="enquiry-heading">
+    <div class="container container--narrow">
+      <EnquiryPanel
+        heading="Arrange a first appointment"
+        body="Yali is preparing to open in Hyderabad. Verified contact details are not published yet. When they are, you will be able to call or send a short WhatsApp message, and the clinic will confirm appointments manually."
+      />
+    </div>
+  </section>
+</BaseLayout>

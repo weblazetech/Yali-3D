@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<BaseLayout
+  title="Page not found"
+  description="The page you were looking for could not be found. Browse Yali Dental Clinic treatments or contact information instead."
+  noindex
+>
+  <section class="section" aria-labelledby="not-found-heading">
+    <div class="container container--narrow">
+      <p class="eyebrow">404</p>
+      <h1 id="not-found-heading">This page is not here</h1>
+      <p class="lede">
+        The address may have changed, or the page may not have been published yet. The treatment information and contact
+        status are a good place to start.
+      </p>
+      <div class="actions" style="margin-top:2rem">
+        <a class="btn btn--primary" href="/treatments">
+          Browse treatments
+          <Icon name="arrow-right" class="btn__icon" />
+        </a>
+        <a class="btn btn--secondary" href="/contact">Contact status</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

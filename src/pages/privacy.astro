@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Icon from '../components/Icon.astro';
+import { privacy } from '../data/privacy';
+---
+
+<BaseLayout title={privacy.metaTitle} description={privacy.metaDescription}>
+  <PageHeader
+    title="Privacy"
+    lead={privacy.lead}
+    breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Privacy' }]}
+  />
+
+  <section class="section section--tight" aria-labelledby="privacy-details-heading">
+    <div class="container container--narrow">
+      <h2 id="privacy-details-heading" class="sr-only">How this website handles information</h2>
+      <div class="privacy-sections">
+        {
+          privacy.sections.map((section) => (
+            <section class="privacy-section" aria-labelledby={`privacy-${section.heading.toLowerCase().replace(/[^a-z]+/g, '-')}`}>
+              <h2 id={`privacy-${section.heading.toLowerCase().replace(/[^a-z]+/g, '-')}`}>{section.heading}</h2>
+              {section.paragraphs.map((paragraph) => (
+                <p>{paragraph}</p>
+              ))}
+              {section.list && (
+                <ul>
+                  {section.list.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))
+        }
+      </div>
+      <div class="contact-aside" style="margin-top:2.5rem">
+        <h2>Contact and privacy</h2>
+        <p>
+          The clinic's verified contact details, including a privacy contact, will be published with the opening
+          information. Until then, the contact page shows which details are confirmed.
+        </p>
+        <a class="link-arrow" href="/contact">
+          See contact status
+          <Icon name="arrow-right" size={16} />
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

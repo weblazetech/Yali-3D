@@ -1,0 +1,89 @@
+---
+import Icon from './Icon.astro';
+---
+
+<section class="section section--tight" aria-labelledby="implant-explorer-heading">
+  <div class="container">
+    <div class="explorer">
+      <div class="explorer__stage">
+        <div class="stage" data-implant-explorer data-implant-stage data-exploded="false">
+          <div class="stage__canvas" data-implant-canvas></div>
+          <div class="stage__still" data-implant-still>
+            <div class="implant-fallback" data-implant-fallback aria-hidden="true">
+              <img
+                class="implant-still implant-still--assembled"
+                src="/images/fallback/implant-assembled.webp"
+                width="900"
+                height="1012"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+              <img
+                class="implant-still implant-still--exploded"
+                src="/images/fallback/implant-exploded.webp"
+                width="900"
+                height="1012"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
+          <div class="explorer__labels" aria-hidden="true">
+            <span class="explorer__label explorer__label--crown">Crown</span>
+            <span class="explorer__label explorer__label--connector">Connector</span>
+            <span class="explorer__label explorer__label--implant">Implant</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="explorer__body">
+        <p class="eyebrow">Implant explorer</p>
+        <h2 id="implant-explorer-heading">See how an implant is put together</h2>
+        <p>
+          A dental implant is not a single piece. The fixture sits in the jaw, the connector joins it to the crown, and
+          the crown is the replacement tooth you see.
+        </p>
+        <ul class="explorer__legend">
+          <li>
+            <span class="explorer__legend-dot" aria-hidden="true"></span>
+            <p><span>Crown.</span> The visible replacement tooth, shaped to match its neighbours.</p>
+          </li>
+          <li>
+            <span class="explorer__legend-dot" aria-hidden="true"></span>
+            <p><span>Connector.</span> Also called an abutment. It joins the implant to the crown.</p>
+          </li>
+          <li>
+            <span class="explorer__legend-dot" aria-hidden="true"></span>
+            <p><span>Implant.</span> The fixture placed in the jawbone, where it acts as an anchor.</p>
+          </li>
+        </ul>
+        <div class="explorer__controls" role="group" aria-label="Implant illustration controls">
+          <button class="stage-tool" type="button" data-implant-rotate aria-pressed="false">
+            <Icon name="rotate" />
+            Rotate
+          </button>
+          <button class="stage-tool" type="button" data-implant-view="assembled" aria-pressed="true">
+            Assembled
+          </button>
+          <button class="stage-tool" type="button" data-implant-view="exploded" aria-pressed="false">
+            Exploded
+          </button>
+          <button class="stage-tool" type="button" data-implant-reset>
+            <Icon name="reset" />
+            Reset view
+          </button>
+        </div>
+        <p class="explorer__hint" data-implant-hint role="status">
+          Assembled view. Illustration only, not to scale.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import '../scripts/implant-explorer';
+</script>
+

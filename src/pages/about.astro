@@ -1,0 +1,207 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Icon from '../components/Icon.astro';
+import {
+  about,
+  carePrinciples,
+} from '../data/about';
+import { doctor } from '../data/doctor';
+import { clinic, isPrelaunch, publicAddress, statusLabel } from '../data/site';
+import DoctorTimeline from '../components/DoctorTimeline.astro';
+
+const hasTimeline = doctor.timeline.some((milestone) => milestone.verified);
+const qualifications = doctor.qualifications;
+---
+
+<BaseLayout
+  title="About Yali and Dr. Reddy"
+  description="Yali Dental Clinic is a family dental clinic in Hyderabad, guided by Dr. B. V. Ramakrishna Reddy's implant and surgical experience. Read the clinic's purpose and care philosophy."
+>
+  <PageHeader
+    title="About Yali and Dr. Reddy"
+    lead="A family dental clinic in Hyderabad, built around clear explanations and careful planning."
+    breadcrumb={[{ label: 'Home', href: '/' }, { label: 'About' }]}
+    asideHeading="On this page"
+    asideLinks={[
+      { label: 'Why Yali exists', href: '#purpose' },
+      { label: 'Dr. Reddy', href: '#dr-reddy' },
+      { label: 'Care philosophy', href: '#philosophy' },
+      { label: 'Opening status', href: '#opening' },
+    ]}
+  >
+    <p class="tagline-block">{clinic.tagline}</p>
+  </PageHeader>
+
+  <section class="section section--tight" aria-labelledby="purpose-heading" id="purpose">
+    <div class="container">
+      <div class="section-head section-head--wide">
+        <p class="eyebrow">Purpose</p>
+        <h2 id="purpose-heading">Why Yali exists</h2>
+      </div>
+      <div class="two-col">
+        <div class="prose">
+          {about.purpose.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+        <aside class="quote-block">
+          <p>{about.ambition}</p>
+          <p class="quote-block__source">Yali's ambition, not an accreditation claim.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight" aria-labelledby="approach-heading">
+    <div class="container">
+      <div class="section-head section-head--wide">
+        <p class="eyebrow">Approach</p>
+        <h2 id="approach-heading">How care is planned</h2>
+      </div>
+      <div class="two-col">
+        <div class="prose">
+          {about.approach.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+        <ul class="link-list">
+          <li>
+            <a href="/treatments/root-canals-crowns">
+              Root canal treatment and crowns
+              <Icon name="arrow-right" size={16} />
+            </a>
+          </li>
+          <li>
+            <a href="/treatments/dental-implants">
+              Dental implants
+              <Icon name="arrow-right" size={16} />
+            </a>
+          </li>
+          <li>
+            <a href="/treatments/oral-maxillofacial-care">
+              Oral and maxillofacial care
+              <Icon name="arrow-right" size={16} />
+            </a>
+          </li>
+          <li>
+            <a href="/your-visit">
+              Your visit
+              <Icon name="arrow-right" size={16} />
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="dr-reddy" aria-labelledby="doctor-about-heading">
+    <div class="container doctor">
+      <div class="doctor__mark" aria-hidden="true">
+        <span class="doctor__monogram">BVR</span>
+        <span class="doctor__mark-caption">{doctor.locality}</span>
+      </div>
+      <div class="doctor__body">
+        <p class="eyebrow">The dentist</p>
+        <h2 id="doctor-about-heading">{doctor.name}</h2>
+        <p class="doctor__role">{doctor.role}</p>
+        {doctor.background.map((paragraph) => <p>{paragraph}</p>)}
+        <ul class="doctor__focus">
+          {doctor.focus.map((item) => <li>{item}</li>)}
+        </ul>
+        {qualifications.length > 0 && (
+          <div class="prose">
+            <h3>Qualifications</h3>
+            <ul>
+              {qualifications.map((qualification) => <li>{qualification}</li>)}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  {hasTimeline && (
+    <section class="section section--sand" aria-labelledby="timeline-heading">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Career</p>
+          <h2 id="timeline-heading">Selected milestones</h2>
+        </div>
+        <DoctorTimeline milestones={doctor.timeline.filter((milestone) => milestone.verified)} />
+      </div>
+    </section>
+  )}
+
+  <section class="section section--sand" id="philosophy" aria-labelledby="philosophy-heading">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Care philosophy</p>
+        <h2 id="philosophy-heading">What we are committing to</h2>
+        <p class="lede">
+          These are working commitments for how Yali plans care, not claims about outcomes.
+        </p>
+      </div>
+      <div class="principles">
+        {
+          carePrinciples.map((principle) => (
+            <article class="principle">
+              <p class="principle__index" aria-hidden="true">{principle.index}</p>
+              <h3>{principle.title}</h3>
+              <p>{principle.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="opening" aria-labelledby="opening-heading">
+    <div class="container">
+      <div class="contact-grid">
+        <div>
+          <p class="eyebrow">Opening status</p>
+          <h2 id="opening-heading">{statusLabel.replace(/\.$/, '')}</h2>
+          <div class="prose" style="margin-top:1rem">
+            {
+              isPrelaunch ? (
+                <>
+                  <p>{about.opening}</p>
+                  <p>
+                    This page will be updated when the clinic confirms its address, hours, and contact details. Until
+                    then, no address or appointment availability is claimed.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p>
+                    {clinic.name} is open in {clinic.city}. {' '}
+                    {publicAddress
+                      ? 'The address, consultation hours, and contact details are published on the contact page.'
+                      : 'Address and consultation hours are being added to the contact page.'}
+                  </p>
+                  <p>Appointments are confirmed manually after an enquiry.</p>
+                </>
+              )
+            }
+          </div>
+          <div class="actions" style="margin-top:1.5rem">
+            <a class="btn btn--primary" href="/contact">
+              See contact status
+              <Icon name="arrow-right" class="btn__icon" />
+            </a>
+            <a class="btn btn--secondary" href="/treatments">Browse treatments</a>
+          </div>
+        </div>
+        <aside class="contact-aside">
+          <h2>What is confirmed</h2>
+          <ul>
+            <li>The clinic is intended for families in Hyderabad.</li>
+            <li>Published care areas: root canal treatment, crowns, dental implants, and oral and maxillofacial care.</li>
+            <li>
+              {publicAddress
+                ? 'The address and consultation hours are published on the contact page.'
+                : 'No address, consultation hours, or contact number is published until it is verified.'}
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

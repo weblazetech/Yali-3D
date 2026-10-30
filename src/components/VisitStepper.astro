@@ -1,0 +1,118 @@
+---
+import type { VisitStage } from '../data/types';
+
+interface Props {
+  stages: VisitStage[];
+  idPrefix: string;
+  label: string;
+}
+
+const { stages, idPrefix, label } = Astro.props;
+---
+
+<div class="stepper" data-stepper>
+  <div class="stepper__nav">
+    <ol class="stepper__list" data-stepper-list aria-label={label}>
+      {
+        stages.map((stage, index) => (
+          <li role="presentation">
+            <button
+              class="step-button"
+              type="button"
+              id={`${idPrefix}-tab-${stage.id}`}
+              aria-controls={`${idPrefix}-panel-${stage.id}`}
+              aria-selected={index === 0 ? 'true' : 'false'}
+              tabindex={index === 0 ? 0 : -1}
+              data-step-button
+            >
+              <span class="step-button__num" aria-hidden="true">{stage.step}</span>
+              <span class="step-button__label">{stage.title}</span>
+            </button>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+
+  <div class="stepper__panels" data-stepper-panels>
+    {
+      stages.map((stage) => (
+        <section
+          class="stepper__panel"
+          id={`${idPrefix}-panel-${stage.id}`}
+          aria-label={stage.title}
+          data-step-panel
+        >
+          <p class="stepper__count">Stage {stage.step} of {String(stages.length).padStart(2, '0')}</p>
+          <h3>{stage.title}</h3>
+          <p>{stage.summary}</p>
+          {stage.paragraphs.map((paragraph) => (
+            <p>{paragraph}</p>
+          ))}
+          {stage.list && (
+            <ul>
+              {stage.list.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  function enhanceStepper(root: HTMLElement): void {
+    const list = root.querySelector<HTMLOListElement>('[data-stepper-list]');
+    const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-step-button]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-step-panel]'));
+    if (!list || buttons.length === 0 || buttons.length !== panels.length) return;
+
+    root.dataset.enhanced = 'true';
+    list.setAttribute('role', 'tablist');
+    list.setAttribute('aria-orientation', 'vertical');
+
+    buttons.forEach((button, index) => {
+      const panel = panels[index];
+      if (!panel) return;
+      button.setAttribute('role', 'tab');
+      button.setAttribute('aria-controls', panel.id);
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', button.id);
+      panel.setAttribute('tabindex', '0');
+    });
+
+    const select = (index: number, moveFocus = false): void => {
+      buttons.forEach((button, buttonIndex) => {
+        const selected = buttonIndex === index;
+        button.setAttribute('aria-selected', String(selected));
+        button.tabIndex = selected ? 0 : -1;
+        const panel = panels[buttonIndex];
+        if (panel) panel.hidden = !selected;
+      });
+      if (moveFocus) buttons[index]?.focus();
+    };
+
+    buttons.forEach((button, index) => {
+      button.addEventListener('click', () => select(index));
+    });
+
+    list.addEventListener('keydown', (event) => {
+      const current = buttons.indexOf(document.activeElement as HTMLButtonElement);
+      if (current === -1) return;
+      let next = current;
+      if (event.key === 'ArrowDown' || event.key === 'ArrowRight') next = (current + 1) % buttons.length;
+      else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') next = (current - 1 + buttons.length) % buttons.length;
+      else if (event.key === 'Home') next = 0;
+      else if (event.key === 'End') next = buttons.length - 1;
+      else return;
+      event.preventDefault();
+      select(next, true);
+    });
+
+    select(0);
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-stepper]').forEach(enhanceStepper);
+</script>

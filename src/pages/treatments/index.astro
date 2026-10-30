@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import TreatmentSelector from '../../components/TreatmentSelector.astro';
+import EnquiryPanel from '../../components/EnquiryPanel.astro';
+import Icon from '../../components/Icon.astro';
+import { treatments } from '../../data/treatments';
+
+const stages = [
+  {
+    title: 'What the treatment addresses',
+    body: 'The problem it is intended to solve, in plain language.',
+  },
+  {
+    title: 'What assessment involves',
+    body: 'The examination, history, and tests that inform a plan.',
+  },
+  {
+    title: 'Options that may be considered',
+    body: 'Reasonable alternatives, including the option of no treatment.',
+  },
+  {
+    title: 'What affects timing and cost',
+    body: 'The factors that change the appointments and the cost.',
+  },
+  {
+    title: 'Follow-up',
+    body: 'Aftercare, review, and what to do if something changes.',
+  },
+];
+---
+
+<BaseLayout
+  title="Treatments"
+  description="Browse Yali Dental Clinic treatment information by concern: tooth pain or damage, missing teeth, and surgical concerns. Every page explains assessment, options, timing, cost, and follow-up."
+>
+  <PageHeader
+    title="Treatments at Yali"
+    lead="Start with the concern you have. Each treatment page explains what assessment involves, the options that may be considered, and what follow-up looks like."
+    breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Treatments' }]}
+    asideHeading="All treatment areas"
+    asideLinks={treatments.map((treatment) => ({ label: treatment.cardTitle, href: treatment.href }))}
+  />
+
+  <section class="section section--tight" aria-labelledby="concerns-heading">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Browse by concern</p>
+        <h2 id="concerns-heading">What brings you here?</h2>
+        <p class="lede">
+          Selecting a concern is a way to navigate, not a diagnosis. Nothing here recommends a treatment or confirms
+          that it is suitable for you.
+        </p>
+      </div>
+      <TreatmentSelector />
+    </div>
+  </section>
+
+  <section class="section section--sand" aria-labelledby="all-treatments-heading">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">All treatment areas</p>
+        <h2 id="all-treatments-heading">Three areas of care</h2>
+        <p class="lede">The treatment information published so far covers these three areas.</p>
+      </div>
+      <div class="treatment-list">
+        {
+          treatments.map((treatment) => (
+            <a class="treatment-row" href={treatment.href}>
+              <h3>{treatment.cardTitle}</h3>
+              <p>{treatment.summary}</p>
+              <span class="treatment-row__arrow" aria-hidden="true">
+                <Icon name="arrow-right" size={16} />
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="structure-heading">
+    <div class="container">
+      <div class="contact-grid">
+        <div>
+          <div class="section-head">
+            <p class="eyebrow">On every treatment page</p>
+            <h2 id="structure-heading">The same five questions</h2>
+            <p class="lede">
+              Every treatment page follows the same order, so you can compare explanations without hunting for the
+              important part.
+            </p>
+          </div>
+          <ol class="treatment-steps">
+            {
+              stages.map((stage, index) => (
+                <li>
+                  <span class="treatment-steps__num" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                  <div>
+                    <h3>{stage.title}</h3>
+                    <p>{stage.body}</p>
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+        <EnquiryPanel heading="A question before you decide?" body="Yali is opening in Hyderabad. Until verified contact details are published, the contact page explains exactly what is confirmed and what is not." />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

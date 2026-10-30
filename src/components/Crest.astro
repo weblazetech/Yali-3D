@@ -1,0 +1,21 @@
+---
+interface Props {
+  size?: number;
+  class?: string;
+  /** Decorative by default: the wordmark beside it names the clinic. */
+  alt?: string;
+  eager?: boolean;
+}
+
+const { size = 42, class: className, alt = '', eager = false } = Astro.props;
+---
+
+<img
+  src="/images/yali-crest-128.png"
+  width={size}
+  height={size}
+  alt={alt}
+  class={className}
+  loading={eager ? 'eager' : 'lazy'}
+  decoding="async"
+/>

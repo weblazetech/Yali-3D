@@ -1,0 +1,113 @@
+---
+import Icon from './Icon.astro';
+import { concerns, concernTreatments } from '../data/concerns';
+
+interface Props {
+  idPrefix?: string;
+}
+
+const { idPrefix = 'concern' } = Astro.props;
+---
+
+<div class="concern-selector" data-concern-selector>
+  <div class="concern-tabs" data-concern-tabs>
+    {
+      concerns.map((concern, index) => (
+        <button
+          type="button"
+          class="concern-tab"
+          id={`${idPrefix}-tab-${concern.id}`}
+          data-concern-tab={concern.id}
+          aria-controls={`${idPrefix}-panel-${concern.id}`}
+          aria-selected={index === 0 ? 'true' : 'false'}
+          tabindex={index === 0 ? 0 : -1}
+        >
+          {concern.label}
+        </button>
+      ))
+    }
+  </div>
+
+  {
+    concerns.map((concern) => (
+      <section
+        class="concern-panel"
+        id={`${idPrefix}-panel-${concern.id}`}
+        data-concern-panel={concern.id}
+        aria-label={concern.title}
+      >
+        <div>
+          <h2>{concern.title}</h2>
+          <p>{concern.summary}</p>
+          <div class="concern-panel__links">
+            {concernTreatments(concern).map((treatment) => (
+              <a class="link-arrow" href={treatment.href}>
+                {treatment.cardTitle}
+                <Icon name="arrow-right" size={16} />
+              </a>
+            ))}
+          </div>
+        </div>
+        <ul class="concern-panel__questions">
+          {concern.questions.map((question) => (
+            <li>{question}</li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</div>
+
+<script>
+  function enhanceConcernSelector(root: HTMLElement): void {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-concern-tab]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-concern-panel]'));
+    const tablist = root.querySelector<HTMLElement>('[data-concern-tabs]');
+    if (!tablist || tabs.length === 0 || tabs.length !== panels.length) return;
+
+    tablist.setAttribute('role', 'tablist');
+    tablist.setAttribute('aria-label', 'Browse treatments by concern');
+
+    tabs.forEach((tab, index) => {
+      const panel = panels[index];
+      if (!panel) return;
+      tab.setAttribute('role', 'tab');
+      tab.setAttribute('aria-controls', panel.id);
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', tab.id);
+      panel.setAttribute('tabindex', '0');
+    });
+
+    const select = (index: number, moveFocus = false): void => {
+      tabs.forEach((tab, tabIndex) => {
+        const selected = tabIndex === index;
+        tab.setAttribute('aria-selected', String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        const panel = panels[tabIndex];
+        if (panel) panel.hidden = !selected;
+      });
+      if (moveFocus) tabs[index]?.focus();
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => select(index));
+    });
+
+    tablist.addEventListener('keydown', (event) => {
+      const current = tabs.indexOf(document.activeElement as HTMLButtonElement);
+      if (current === -1) return;
+      let next = current;
+      if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (current + 1) % tabs.length;
+      else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (current - 1 + tabs.length) % tabs.length;
+      else if (event.key === 'Home') next = 0;
+      else if (event.key === 'End') next = tabs.length - 1;
+      else return;
+      event.preventDefault();
+      select(next, true);
+    });
+
+    select(0);
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-concern-selector]').forEach(enhanceConcernSelector);
+</script>

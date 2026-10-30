@@ -1,0 +1,27 @@
+---
+import type { Faq } from '../data/types';
+
+interface Props {
+  items: Faq[];
+  heading?: string;
+}
+
+const { items, heading } = Astro.props;
+---
+
+<div class="faq" data-faq>
+  {heading && <h2 class="sr-only">{heading}</h2>}
+  {
+    items.map((item) => (
+      <details>
+        <summary>
+          <span>{item.question}</span>
+          <span class="faq__icon" aria-hidden="true" />
+        </summary>
+        <div class="faq__answer">
+          <p>{item.answer}</p>
+        </div>
+      </details>
+    ))
+  }
+</div>

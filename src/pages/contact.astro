@@ -1,0 +1,209 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Icon from '../components/Icon.astro';
+import ContactActions from '../components/ContactActions.astro';
+import {
+  clinic,
+  isPrelaunch,
+  isOpen,
+  hasContactChannel,
+  publicAddress,
+  publicHours,
+  statusLabel,
+} from '../data/site';
+import { contact, contactPageMeta } from '../data/contact';
+
+const lead = isPrelaunch
+  ? contact.lead
+  : `Contact ${clinic.name} in ${clinic.city}. Appointments are confirmed manually after an enquiry.`;
+
+const statusTitle = isPrelaunch ? contact.statusTitle : `${clinic.name}, ${clinic.city}`;
+
+const statusBody = isOpen
+  ? hasContactChannel
+    ? 'The clinic is open in Hyderabad. Use a verified channel below to make an enquiry. Appointments are confirmed manually; sending a message does not book an appointment.'
+    : 'The clinic is open in Hyderabad. Verified contact details are being updated, so no placeholder number is shown.'
+  : contact.statusBody;
+
+const rows = [
+  {
+    label: 'Phone',
+    value: clinic.phone?.display ?? 'Not published yet',
+    note: clinic.phone
+      ? 'Verified number. The call button opens your phone app.'
+      : 'A call link will appear only when the clinic number has been verified.',
+  },
+  {
+    label: 'WhatsApp',
+    value: clinic.whatsapp?.display ?? 'Not published yet',
+    note: clinic.whatsapp
+      ? 'Verified number. WhatsApp opens with a short, generic message you can edit.'
+      : 'A WhatsApp link will appear only when the clinic number has been verified.',
+  },
+  {
+    label: 'Address',
+    value: publicAddress ? publicAddress.join(', ') : 'Being confirmed',
+    note: publicAddress
+      ? 'The clinic address is confirmed. Directions are available below.'
+      : 'The clinic will publish its address once the location is final.',
+  },
+  {
+    label: 'Consultation hours',
+    value: publicHours ? publicHours.map((entry) => `${entry.label}: ${entry.value}`).join(' · ') : 'Being confirmed',
+    note: publicHours
+      ? 'Consultation hours are confirmed. Appointments are confirmed manually.'
+      : 'Hours will be published with the opening details.',
+  },
+];
+
+const showMap = Boolean(isOpen && publicAddress);
+---
+
+<BaseLayout title={contactPageMeta.metaTitle} description={contactPageMeta.metaDescription}>
+  <PageHeader
+    title={contact.heading}
+    lead={lead}
+    breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Contact' }]}
+  />
+
+  <section class="section section--tight" aria-labelledby="contact-status-heading">
+    <div class="container">
+      <div class="contact-grid">
+        <div>
+          <p class="eyebrow">Current status</p>
+          <h2 id="contact-status-heading">{statusTitle}</h2>
+          <div class="prose" style="margin-top:1rem">
+            <p>{statusBody}</p>
+          </div>
+
+          <dl class="contact-table" style="margin-top:2rem">
+            {
+              rows.map((row) => (
+                <div class="contact-row">
+                  <dt>{row.label}</dt>
+                  <dd>
+                    <span class="contact-row__value">{row.value}</span>
+                    <span class="contact-row__note">{row.note}</span>
+                  </dd>
+                </div>
+              ))
+            }
+          </dl>
+
+          {
+            hasContactChannel ? (
+              <div class="notice" style="margin-top:2rem">
+                <p>
+                  <strong>Verified contact channels are available.</strong> Use the actions below to call or send a
+                  WhatsApp message. Appointments are confirmed manually.
+                </p>
+                <ContactActions />
+              </div>
+            ) : (
+              <div class="contact-aside" style="margin-top:2rem">
+                <h2>Why no contact buttons?</h2>
+                <p>
+                  The clinic does not yet have a verified number to publish. Adding a placeholder would be misleading, so
+                  this page shows the status instead. The buttons will appear here when a channel is confirmed.
+                </p>
+              </div>
+            )
+          }
+        </div>
+
+        <aside class="contact-aside" aria-labelledby="expect-heading">
+          <h2 id="expect-heading">What to expect</h2>
+          <ul>
+            {(hasContactChannel ? contact.whatToExpectOpen : contact.whatToExpect).map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="contact-aside__urgent">
+            <strong>{contact.urgentTitle}.</strong> {contact.urgentBody}
+          </p>
+          <a class="link-arrow" href="/privacy">
+            {contact.privacyHint}
+            <Icon name="arrow-right" size={16} />
+          </a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sand" aria-labelledby="city-heading">
+    <div class="container">
+      <div class="two-col">
+        <div>
+          <p class="eyebrow">Location and hours</p>
+          <h2 id="city-heading">{statusLabel.replace(/\.$/, '')}</h2>
+          <div class="prose" style="margin-top:1rem">
+            {
+              isOpen ? (
+                <>
+                  <p>
+                    {publicAddress
+                      ? `${clinic.name} is at ${publicAddress.join(', ')}. Consultation hours are published above.`
+                      : 'The clinic is open in Hyderabad. The address is being added to this page.'}
+                  </p>
+                  <p>
+                    Appointments are confirmed manually after an enquiry. This website does not show real-time
+                    availability and does not accept bookings.
+                  </p>
+                  {clinic.mapsUrl && (
+                    <p>
+                      <a class="link-arrow" href={clinic.mapsUrl} target="_blank" rel="noopener noreferrer">
+                        Open directions in a new tab
+                        <Icon name="external" size={16} />
+                      </a>
+                    </p>
+                  )}
+                </>
+              ) : (
+                <>
+                  <p>
+                    The clinic's neighbourhood and address are still being confirmed. A map, directions, and
+                    consultation hours will be added only after they are approved, so no location is shown here yet.
+                  </p>
+                  <p>
+                    Appointments are confirmed manually after an enquiry. This website does not show real-time
+                    availability and does not accept bookings.
+                  </p>
+                </>
+              )
+            }
+          </div>
+        </div>
+        {
+          showMap ? (
+            <div class="contact-aside">
+              <h2>Find the clinic</h2>
+              <p>{publicAddress?.join(', ')}</p>
+              {publicHours && (
+                <p>
+                  {publicHours.map((entry) => (
+                    <>
+                      <strong>{entry.label}:</strong> {entry.value}
+                      <br />
+                    </>
+                  ))}
+                </p>
+              )}
+              {clinic.mapsUrl ? (
+                <a class="btn btn--primary" href={clinic.mapsUrl} target="_blank" rel="noopener noreferrer">
+                  Directions
+                  <Icon name="external" class="btn__icon" />
+                  <span class="sr-only">(opens in a new tab)</span>
+                </a>
+              ) : (
+                <p class="muted" style="font-size:0.85rem">A directions link will be added when it is approved.</p>
+              )}
+            </div>
+          ) : (
+            <div class="map-placeholder" aria-hidden="true">
+              <span>Directions will be published once the address is confirmed.</span>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

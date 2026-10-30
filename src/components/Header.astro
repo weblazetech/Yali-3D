@@ -1,0 +1,65 @@
+---
+import Crest from './Crest.astro';
+import Icon from './Icon.astro';
+import { clinic, primaryNav } from '../data/site';
+
+const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
+
+function isActive(href: string): boolean {
+  if (href === '/') return path === '/';
+  return path === href || path.startsWith(`${href}/`);
+}
+---
+
+<div class="top-sentinel" aria-hidden="true"></div>
+<header class="site-header" data-site-header>
+  <div class="container header__inner">
+    <a class="brand" href="/" aria-label={`${clinic.name} home`}>
+      <Crest size={48} class="brand__crest" eager />
+      <span class="brand__text">
+        <span class="brand__name">YALI</span>
+        <span class="brand__sub">Dental Clinic</span>
+      </span>
+    </a>
+
+    <nav class="primary-nav" id="primary-nav" aria-label="Primary" data-primary-nav>
+      <ul>
+        {
+          primaryNav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <button
+        class="motion-toggle"
+        type="button"
+        aria-pressed="false"
+        data-motion-toggle
+        title="Turn animated 3D and motion on or off"
+      >
+        <Icon name="motion" />
+        <span class="motion-toggle__label" aria-hidden="true">Reduce motion</span>
+        <span class="sr-only">Reduce motion</span>
+        <span class="motion-toggle__state" data-motion-state aria-hidden="true">Off</span>
+      </button>
+    </div>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="primary-nav"
+      data-menu-toggle
+    >
+      <span class="menu-toggle__bars" aria-hidden="true"></span>
+      <span class="sr-only">Menu</span>
+    </button>
+  </div>
+</header>
