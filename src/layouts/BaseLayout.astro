@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Analytics from '@vercel/analytics/astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { clinic } from '../data/site';
@@ -16,6 +17,11 @@ const {
   description,
   noindex = false,
 } = Astro.props;
+
+// Vercel injects this system variable during a Vercel build. Keeping the
+// component out of other builds avoids requesting Vercel's insights endpoint
+// on hosts that cannot serve it.
+const analyticsEnabled = import.meta.env.VERCEL === '1';
 
 const pageTitle = title
   ? `${title} | ${clinic.name}`
@@ -98,5 +104,6 @@ const organisationLd = siteOrigin
     <script>
       import '../scripts/ui';
     </script>
+    {analyticsEnabled && <Analytics />}
   </body>
 </html>

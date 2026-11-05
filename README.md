@@ -2,7 +2,7 @@
 
 Static, content-led website for Yali Dental Clinic, opening in Hyderabad. Built with Astro 7, TypeScript, Three.js and GSAP ScrollTrigger.
 
-The repository currently contains a **private review build**. It is not authorised for public publication: contact details, clinical copy and operational details still require confirmation (see [`docs/REVIEW.md`](docs/REVIEW.md)).
+The repository currently contains a **review-only build**. It is not authorised for public publication: contact details, clinical copy and operational details still require confirmation (see [`docs/REVIEW.md`](docs/REVIEW.md)). The source is in the public `weblazetech/Yali-3D` GitHub repository; the code being public is not publication approval for the clinic.
 
 ## Requirements
 
@@ -11,8 +11,9 @@ The repository currently contains a **private review build**. It is not authoris
 
 ## Run locally
 
+From the repository root (or `C:\Code\Yali\website` in the workspace):
+
 ```bash
-cd website
 npm install
 npm run dev
 # http://localhost:4321
@@ -44,11 +45,11 @@ The value must be an absolute URL. It is used for canonical URLs, Open Graph URL
 ## Project structure
 
 ```
-site/
+.
 ├── public/
 │   ├── fonts/                     self-hosted Lora and DM Sans (latin subset)
 │   ├── images/
-│   │   ├── yali-crest-*.png       crest extracted from YALI BRANDING.pdf
+│   │   ├── yali-crest-*.png       active red/gold crest, transparent background
 │   │   └── fallback/              composed stills rendered from the 3D models
 │   └── favicon.svg
 ├── src/
@@ -62,7 +63,7 @@ site/
 │   │   ├── about.ts               purpose, principles
 │   │   ├── contact.ts             contact status copy
 │   │   └── privacy.ts             privacy copy
-│   ├── layouts/BaseLayout.astro   head, metadata, header, footer, shared script
+│   ├── layouts/BaseLayout.astro   head, metadata, header, footer, analytics
 │   ├── pages/                     nine routes, 404, robots.txt endpoint
 │   ├── scripts/
 │   │   ├── ui.ts                  header, menu, motion control, reveals
@@ -81,7 +82,7 @@ site/
 - **Contact channels:** `phone` and `whatsapp` are `null` until a real number is verified. When a channel exists, `tel:` and WhatsApp actions are rendered automatically, and the WhatsApp link opens a short generic message. No placeholder number exists anywhere in the project.
 - **Treatments:** `src/data/treatments.ts` is the single source for the three treatment pages. All three share the same section order (addresses, assessment, options, timing and cost, follow-up, FAQs).
 - **Doctor data:** `src/data/doctor.ts` intentionally has an empty qualifications list and an empty verified timeline. Do not add inferred dates or expand "PG" into a qualification.
-- **Privacy copy:** `src/data/privacy.ts` describes the implemented behaviour, not a template. Update it if analytics, forms or hosting details change.
+- **Privacy and analytics:** `src/data/privacy.ts` describes the implemented behaviour, not a template. It currently discloses cookieless Vercel Web Analytics, the absence of patient accounts and enquiry forms, and what happens when a Call or WhatsApp link is followed. Update it if hosting, analytics or contact behaviour changes.
 
 ## 3D and motion
 
@@ -100,14 +101,14 @@ Measured on the production build with a fresh browser context (Edge headless, lo
 
 | Route | Initial payload | Deferred 3D |
 |---|---|---|
-| `/` | ~156 KB | ~183 KB (Three.js scene chunk + GSAP + ScrollTrigger) |
+| `/` | ~157 KB | ~183 KB (Three.js scene chunk + GSAP + ScrollTrigger) |
 | `/treatments/dental-implants` | ~146 KB | ~139 KB (scene chunk) |
-| `/treatments` | ~90 KB | none |
-| `/treatments/root-canals-crowns` | ~90 KB | none |
-| `/about` | ~90 KB | none |
-| `/contact` | ~89 KB | none |
+| `/treatments` | ~91 KB | none |
+| `/treatments/root-canals-crowns` | ~91 KB | none |
+| `/about` | ~91 KB | none |
+| `/contact` | ~90 KB | none |
 
-Gzip build sizes: scene chunk 138.2 KB, GSAP 26.5 KB, ScrollTrigger 17 KB, CSS 7.5 KB, fonts 57.3 KB, crest 17.6 KB. Raw build sizes are listed in `docs/REVIEW.md`. Both measurements are far below the 1 MB initial and 3 MB deferred targets.
+Gzip build sizes: scene chunk 138.2 KB, GSAP 26.5 KB, ScrollTrigger 17 KB, CSS 7.8 KB, fonts 57.3 KB, crest 18.4 KB. Raw build sizes are listed in `docs/REVIEW.md`. Both measurements are far below the 1 MB initial and 3 MB deferred targets. These figures exclude Vercel Analytics, which is rendered only in Vercel builds.
 
 ## Accessibility notes
 
@@ -116,8 +117,32 @@ Gzip build sizes: scene chunk 138.2 KB, GSAP 26.5 KB, ScrollTrigger 17 KB, CSS 7
 - Visible focus rings, 44 × 44 CSS pixel controls, keyboard support for tabs and the mobile menu (including Escape and focus return).
 - Automated check results are recorded in `docs/REVIEW.md`. They are not a substitute for manual screen-reader testing.
 
+## Vercel Analytics
+
+The Astro build of Vercel Web Analytics is imported in `src/layouts/BaseLayout.astro`:
+
+```astro
+import Analytics from '@vercel/analytics/astro';
+...
+{analyticsEnabled && <Analytics />}
+```
+
+- This is the Astro component, not `@vercel/analytics/next`. The site is Astro, not Next.js or React, so the Next.js snippet does not apply.
+- `analyticsEnabled` is true only when the build runs with `VERCEL=1`, which Vercel sets. Local builds and previews therefore do not request `/_vercel/insights/script.js` and do not produce a 404.
+- On a Vercel deployment, enable Web Analytics in the project dashboard. The platform serves the insights endpoint.
+- Vercel Analytics is cookieless and is not used for advertising or cross-site tracking. The privacy page and homepage FAQ have been updated. No patient information is collected.
+- Analytics is deliberately not loaded on non-Vercel hosts because the endpoint is Vercel-specific.
+
 ## Deployment
 
-`npm run build` writes a self-contained static site to `dist/`. It can be hosted on any static host.
+`npm run build` writes a self-contained static site to `dist/`. To deploy on Vercel:
 
-Public publication is blocked until the launch gates in [`docs/REVIEW.md`](docs/REVIEW.md) are resolved, including at least one verified contact channel and Dr. Reddy's clinical review. The Sites preview workflow was not available in this execution session, so no private preview deployment was created; the local preview command above is the review surface.
+- Framework preset: Astro.
+- Build command: `npm run build`.
+- Output directory: `dist`.
+- Set the verified `SITE_URL` for canonical URLs and the sitemap when the domain is confirmed.
+- Enable Web Analytics in the Vercel project after the first deployment.
+
+The existing `weblazetech/Yali-3D` repository is public; make it private or move the internal review docs if they should not be public.
+
+Public publication is blocked until the launch gates in [`docs/REVIEW.md`](docs/REVIEW.md) are resolved, including at least one verified contact channel and Dr. Reddy's clinical review.

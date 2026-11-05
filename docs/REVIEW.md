@@ -1,14 +1,14 @@
 # Internal review, pending content and release checklist
 
-Status: **private review build, not for public publication.**
-Build date: 30 October 2026.
-Source: `website/`. Production build: `website/dist/`. Local preview: `npm run preview`.
+Status: **review-only build, not for public publication.**
+Build date: 5 November 2026.
+Source: repository root (workspace `website/`). Production build: `dist/`. Local preview: `npm run preview`.
 
 This document is internal. It is not rendered on the website and must not be treated as clinical approval.
 
 ## 1. Release decision
 
-The site is complete as a review build and passes the local checks recorded in section 7. It must not be published publicly until the gates below are resolved. A private preview deployment was not created because the Sites preview workflow was not available in this execution session.
+The site is complete as a review build and passes the local checks recorded in section 7. It must not be published publicly until the gates below are resolved. The source is in the public `weblazetech/Yali-3D` GitHub repository; no Vercel deployment has been created yet.
 
 Two items are public-launch blockers on their own:
 
@@ -32,13 +32,15 @@ Two items are public-launch blockers on their own:
 | Authentic photography of Dr. Reddy and the clinic | Missing. | Supplied, approved photography. The current typographic introduction is deliberate; no stock or generated person or interior has been used. | Clinic |
 | Reviews and testimonials | None. | Authentic, attributable reviews earned by Yali. Prior-practice reviews must not be presented as Yali's. No reviews section is present. | Clinic |
 | Production domain and deployment authorisation | Open. | Verified base URL for `SITE_URL`, hosting decision, and explicit authorisation to publish. | Clinic |
-| Privacy and hosting disclosure | Draft. | Confirm the hosting provider and any logging behaviour, then update `src/data/privacy.ts`. | Clinic / web |
+| Privacy, hosting and analytics disclosure | Implemented, approval pending. | Confirm the hosting provider, enable Vercel Web Analytics in the project, and approve the privacy wording (including any local consent requirement). Current `src/data/privacy.ts` discloses cookieless Vercel Analytics. | Clinic / web |
+| Repository visibility | Public. | Decide whether the source and internal review docs should remain public; make the repository private or move `docs/` before public publication. | Clinic / web |
 | Opening announcement wording | Draft. | Approve the exact prelaunch/open wording. Current wording is "Opening in Hyderabad." only. | Clinic |
 
 ## 3. Confirmed facts used
 
 - Clinic name: Yali Dental Clinic.
 - Tagline: "Guardians of Your Smile." (from `YALI BRANDING.pdf`).
+- Active palette: red `#B02A1F`, gold `#FFBE00`, warm beige `#ECE4D9`, taken from the supplied red/gold crest. This supersedes the tokens in `PLAN.md`.
 - City: Hyderabad; neighbourhood and address undecided.
 - Care areas described: root canal treatment, crowns, dental implants, and oral and maxillofacial care.
 - Dr. B. V. Ramakrishna Reddy practises implant and surgical dentistry and guides care at Yali.
@@ -53,7 +55,8 @@ Two items are public-launch blockers on their own:
 - No implant volume, retention rate, success rate, or other numerical claims.
 - No patient testimonials, review scores, or reviews from a prior practice.
 - No clinic interior, doctor portrait, or patient imagery.
-- No analytics, cookies, forms, patient accounts, payments, scheduling integration, blog, or second language.
+- No advertising scripts, tracking pixels, or cookies set by Yali. Cookieless Vercel Web Analytics is included for Vercel builds only; see section 7.7.
+- No forms, patient accounts, payments, scheduling integration, blog, or second language.
 - No clinical claim of "painless", "guaranteed", or accredited care.
 - "International-standard treatment" is written as an ambition and explicitly says it is an aim, not an accreditation.
 
@@ -69,7 +72,7 @@ Two items are public-launch blockers on their own:
 | `/about` | Complete review build | Purpose, doctor biography (confirmed material only), care philosophy, opening status. Qualifications and timeline omitted. |
 | `/your-visit` | Complete review build | Five stages, preparation list, questions worth asking. Hygiene/material practices omitted pending confirmation. |
 | `/contact` | Complete review build | Honest prelaunch status, no fake contact actions, address/hours placeholders, urgent-concern guidance. |
-| `/privacy` | Complete review build | Describes actual implemented behaviour; no invented analytics or retention claims. |
+| `/privacy` | Complete review build | Describes actual implemented behaviour, including cookieless Vercel Analytics; no invented retention claims. |
 | `/404` | Complete review build | Helpful fallback with `noindex`. |
 
 ## 6. Interactions and states
@@ -96,6 +99,8 @@ Environment: Windows, Node 24.16.0, Astro 7.4.4, Edge 141 headless via Playwrigh
 | `npm run build` | 10 static pages built into `dist/` (nine routes, 404, robots.txt). |
 | Build with `SITE_URL=https://example.org` | Canonical URLs, `og:url`, Organization JSON-LD, `sitemap-index.xml` and robots sitemap line generated. |
 | Final build without `SITE_URL` | No canonical, `og:url`, sitemap, or invented domain. Expected for review. |
+| Default production build | No `<vercel-analytics>` markup and no analytics request. Clean local preview. |
+| Build with `VERCEL=1` | `<vercel-analytics>` and the analytics bootstrap are present on every page. This is the build shape Vercel produces. |
 
 ### 7.2 Route, link and layout sweep
 
@@ -136,15 +141,18 @@ Key measured contrast pairs:
 
 | Pair | Ratio |
 |---|---|
-| Charcoal `#383434` on ivory `#FFFBF6` | 11.93:1 |
-| Muted `#6D5F57` on ivory | 5.95:1 |
-| Muted `#6D5F57` on sand-soft `#F4EBE2` | 5.21:1 |
-| Deep terracotta `#854431` on ivory | 7.11:1 |
-| Deep terracotta on sand `#DDCCBC` | 4.68:1 |
-| Ivory on deep terracotta | 7.11:1 |
-| Footer muted `#D9C8BB` on charcoal | 7.57:1 |
+| Ink `#332C28` on beige `#ECE4D9` | 10.88:1 |
+| Muted `#5F534A` on beige `#ECE4D9` | 5.90:1 |
+| Muted `#5F534A` on sand-soft `#F4ECE1` | 6.35:1 |
+| Deep red `#8C1F16` on beige | 7.18:1 |
+| Deep red on sand `#E3D7C8` | 6.38:1 |
+| Ivory `#ECE4D9` on deep red `#8C1F16` | 7.18:1 |
+| Cream `#F6EBDC` on footer red `#7E1B13` | 8.69:1 |
+| Muted cream `#E4CDB7` on footer red | 6.68:1 |
+| Gold `#FFBE00` on footer red | 6.14:1 |
+| Crest red `#B02A1F` on beige | 5.21:1 |
 
-Brand terracotta `#B06449` on ivory measures 4.28:1. It is used for decorative marks and large/non-text elements only; functional text uses deep terracotta.
+Gold on beige measures 1.32:1 and is never used for text. Crest red is used for decorative marks and large shapes; functional links and buttons use deep red. The red/gold palette supersedes the ivory/sand/terracotta tokens in `PLAN.md` after the clinic supplied the new crest artwork on 31 October 2026.
 
 These are automated checks. Screen-reader testing, real-device touch testing, and browser-specific focus behaviour were not performed (see section 9).
 
@@ -154,24 +162,24 @@ Method: production build, fresh browser context, Edge headless, `performance.get
 
 | Route | Initial payload | Deferred 3D |
 |---|---|---|
-| `/` | 156 KB | 183 KB |
+| `/` | 157 KB | 183 KB |
 | `/treatments/dental-implants` | 146 KB | 139 KB |
-| `/treatments` | 90 KB | none |
-| `/treatments/root-canals-crowns` | 90 KB | none |
-| `/about` | 90 KB | none |
-| `/contact` | 89 KB | none |
+| `/treatments` | 91 KB | none |
+| `/treatments/root-canals-crowns` | 91 KB | none |
+| `/about` | 91 KB | none |
+| `/contact` | 90 KB | none |
 
 Largest build assets (raw / gzip):
 
 - `_astro/scenes.*.js`: 554.6 KB / 138.2 KB (Three.js, models and scenes; deferred).
 - `_astro/gsap.*.js`: 68.3 KB / 26.5 KB (deferred, desktop story only).
 - `_astro/ScrollTrigger.*.js`: 41.7 KB / 17.0 KB (deferred).
-- `_astro/BaseLayout.*.css`: 36.6 KB / 7.5 KB.
+- `_astro/BaseLayout.*.css`: 37.9 KB / 7.8 KB.
 - Fonts: 57.5 KB total (Lora 600, DM Sans variable, latin subset, self-hosted).
-- Crest PNG at 128 px: 17.7 KB (header and footer).
+- Crest PNG at 128 px: 18.8 KB (header and footer).
 - Fallback stills: 7.3–31.5 KB each; only route-relevant stills load.
 
-Both targets pass: initial payload below 1 MB and deferred 3D below 3 MB per route.
+Both targets pass: initial payload below 1 MB and deferred 3D below 3 MB per route. These figures exclude Vercel Analytics, which is absent from non-Vercel builds. The analytics bootstrap adds a small inline script only to Vercel builds; the Vercel-hosted insights script itself was not measured locally.
 
 ### 7.6 Prelaunch and open-state rendering
 
@@ -179,12 +187,21 @@ Both targets pass: initial payload below 1 MB and deferred 3D below 3 MB per rou
 - Open state tested with **temporary fixture data** (state `open`, a non-real test number, test address/hours/map) and then removed. In that build: `tel:` and `wa.me` links rendered, the contact page showed the test address/hours and directions link, the homepage status changed, footer details rendered, and no "Opening in Hyderabad" copy remained on the homepage or about page.
 - The fixture was reverted, the site rebuilt, and the final `dist/` was checked for the fixture strings and number. None are present.
 
+### 7.7 Vercel Analytics
+
+- `@vercel/analytics@2.0.1` is imported in `src/layouts/BaseLayout.astro` using the Astro component (`@vercel/analytics/astro`). The Next.js component in the original instruction is not applicable to this Astro site.
+- Rendering is gated on `import.meta.env.VERCEL`. The default build contains no `<vercel-analytics>` element, no analytics JavaScript, and makes no analytics request. This was verified in the local preview with Playwright; there were no console errors.
+- A build with `VERCEL=1` contains the `<vercel-analytics>` element and bootstrap on every page. This is the shape a Vercel build produces; no Vercel deployment was created.
+- The privacy page and homepage FAQ were updated to disclose cookieless Vercel Analytics. The privacy page explicitly says the service is not used for advertising or cross-site tracking and does not identify patients.
+- A local preview of a `VERCEL=1` build would request `/_vercel/insights/script.js`, which exists only on Vercel. That is why the local review build excludes the component rather than logging a 404.
+- Not tested: actual analytics collection on Vercel, the Vercel dashboard, and any jurisdictional consent requirement.
+
 ## 8. Content and claims audit
 
 - No numerical statistics, retention rates, implant volumes, rankings, awards, "pioneered", or outcome guarantees.
 - No qualifications expanded or invented. "PG" is not presented as "MDS".
 - No prior-practice reviews or testimonials.
-- No patient or clinic photography. The crest is extracted from the supplied brand PDF; the 3D models and stills are original illustrations.
+- No patient or clinic photography. The active crest is the supplied red/gold artwork with its beige ground removed; the 3D models and stills are original illustrations.
 - No em or en dashes in the source copy.
 - The only opening/availability wording is derived from configuration and avoids unconfirmed details.
 - Clinical statements remain subject to Dr. Reddy's review. Examples that need particular attention: anaesthesia and discomfort wording, healing factors, implant longevity wording ("Many implants last for years"), and the oral and maxillofacial scope description.
@@ -200,7 +217,7 @@ Both targets pass: initial payload below 1 MB and deferred 3D below 3 MB per rou
 - The crown story view and implant exploded view are explanatory illustrations, not anatomical diagrams. Labels and sequencing require review.
 - The print stylesheet is minimal and was not verified.
 - A live change of the operating-system reduced-motion preference while the page is open was not exercised; the control and initial OS detection were tested.
-- No real private Sites preview was deployed.
+- No real private Sites preview was deployed. The GitHub repository is public; no Vercel deployment or analytics collection has been tested.
 
 ## 10. Review checklist
 
@@ -215,7 +232,8 @@ Both targets pass: initial payload below 1 MB and deferred 3D below 3 MB per rou
 - [ ] Confirm the address, neighbourhood, hours, map and opening status.
 - [ ] Confirm hygiene and material-selection practices, or keep them omitted.
 - [ ] Supply authentic doctor/clinic photography if it is to be used.
-- [ ] Approve the privacy page and hosting disclosure.
+- [ ] Approve the privacy page, Vercel Analytics disclosure, and hosting details.
+- [ ] Enable Vercel Web Analytics after deployment and verify data collection.
 - [ ] Set the verified `SITE_URL` and confirm the production domain.
 - [ ] Run manual browser/device and screen-reader checks.
 - [ ] Obtain explicit authorisation before public publication.

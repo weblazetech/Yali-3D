@@ -11,7 +11,14 @@ export const privacy = {
       heading: 'What this website collects',
       paragraphs: [
         'The website does not have patient accounts, an enquiry form, a newsletter, payments, or appointment booking. It does not ask for symptoms, medical records, or personal details and it does not store them.',
-        'The site does not include analytics, advertising scripts, tracking pixels, or cookies set by Yali. Fonts, images, and scripts are served from this website rather than from third-party services, so loading a page does not send your request to a font or media network.',
+        'Fonts and images are served from this website rather than from a font or media network.',
+      ],
+    },
+    {
+      heading: 'Analytics',
+      paragraphs: [
+        'The website uses Vercel Web Analytics to count page visits and show aggregate traffic information. Vercel describes the service as cookieless and privacy-friendly. Yali does not use it for advertising or cross-site tracking.',
+        "When the site is deployed on Vercel, the analytics script is served by Vercel and the service processes the technical request information needed to provide those reports. Vercel's own privacy policy applies to that processing. The clinic does not use analytics to identify patients or to collect symptoms, reports, or medical details.",
       ],
     },
     {
@@ -31,13 +38,13 @@ export const privacy = {
     {
       heading: 'Children',
       paragraphs: [
-        'The website does not collect information from anyone, including children. It is written for adults arranging care for themselves or their family.',
+        'The website does not ask anyone, including children, for personal or medical information. Analytics records page visits, not patient details. It is written for adults arranging care for themselves or their family.',
       ],
     },
     {
       heading: 'Changes to this page',
       paragraphs: [
-        'If the clinic adds a contact form, analytics, or another service that changes how information is handled, this page will be updated before that change is used.',
+        'If the clinic adds a contact form or another service that changes how information is handled, this page will be updated before that change is used.',
       ],
     },
     {
@@ -49,5 +56,5 @@ export const privacy = {
   ] as PrivacySection[],
   metaTitle: 'Privacy',
   metaDescription:
-    'How the Yali Dental Clinic website handles information: no accounts, enquiry forms, analytics, or cookies, and what happens when you follow a Call or WhatsApp link.',
+    'How the Yali Dental Clinic website handles information: no patient accounts or enquiry forms, cookieless Vercel Analytics, and what happens when you follow a Call or WhatsApp link.',
 };

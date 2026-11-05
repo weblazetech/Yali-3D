@@ -24,7 +24,7 @@ export const homeFaqs: Faq[] = [
   {
     question: 'Does Yali collect patient information through this website?',
     answer:
-      'No. The website has no enquiry form, no patient account, and no analytics. If you later choose to call or send a WhatsApp message, that conversation happens outside the website. See the privacy page for details.',
+      'No patient information is collected. The website has no enquiry form or patient account. It uses cookieless Vercel Analytics to count page visits; that service does not identify individual patients. If you later choose to call or send a WhatsApp message, that conversation happens outside the website. See the privacy page for details.',
   },
   {
     question: 'Is care for children available?',

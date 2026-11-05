@@ -2,6 +2,9 @@
   "name": "yali-dental-clinic",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=22.23.4"
+  },
   "type": "module",
   "description": "Yali Dental Clinic website. Static Astro site with a deferred Three.js hero, a bounded GSAP treatment story and an implant explorer.",
   "scripts": {
@@ -13,6 +16,7 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
+    "@vercel/analytics": "^2.0.1",
     "astro": "^7.4.4",
     "gsap": "^3.15.0",
     "three": "^0.186.1"
