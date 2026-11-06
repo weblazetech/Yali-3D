@@ -15,10 +15,10 @@ export const privacy = {
       ],
     },
     {
-      heading: 'Analytics',
+      heading: 'Analytics and performance measurement',
       paragraphs: [
-        'The website uses Vercel Web Analytics to count page visits and show aggregate traffic information. Vercel describes the service as cookieless and privacy-friendly. Yali does not use it for advertising or cross-site tracking.',
-        "When the site is deployed on Vercel, the analytics script is served by Vercel and the service processes the technical request information needed to provide those reports. Vercel's own privacy policy applies to that processing. The clinic does not use analytics to identify patients or to collect symptoms, reports, or medical details.",
+        'The website uses Vercel Web Analytics to count page visits and show aggregate traffic information, and Vercel Speed Insights to measure page performance from real visits. Vercel describes Web Analytics as cookieless. Yali does not use either service for advertising or cross-site tracking.',
+        "When the site is deployed on Vercel, the scripts are served by Vercel and the services process the technical request and performance information needed to produce those reports. Vercel's own privacy policy applies to that processing. The clinic does not use either service to identify patients or to collect symptoms, reports, or medical details.",
       ],
     },
     {
@@ -38,7 +38,7 @@ export const privacy = {
     {
       heading: 'Children',
       paragraphs: [
-        'The website does not ask anyone, including children, for personal or medical information. Analytics records page visits, not patient details. It is written for adults arranging care for themselves or their family.',
+        'The website does not ask anyone, including children, for personal or medical information. Analytics and performance measurement record page visits and timings, not patient details. It is written for adults arranging care for themselves or their family.',
       ],
     },
     {
@@ -56,5 +56,5 @@ export const privacy = {
   ] as PrivacySection[],
   metaTitle: 'Privacy',
   metaDescription:
-    'How the Yali Dental Clinic website handles information: no patient accounts or enquiry forms, cookieless Vercel Analytics, and what happens when you follow a Call or WhatsApp link.',
+    'How the Yali Dental Clinic website handles information: no patient accounts or enquiry forms, Vercel Web Analytics and Speed Insights, and what happens when you follow a Call or WhatsApp link.',
 };

@@ -63,7 +63,7 @@ The value must be an absolute URL. It is used for canonical URLs, Open Graph URL
 │   │   ├── about.ts               purpose, principles
 │   │   ├── contact.ts             contact status copy
 │   │   └── privacy.ts             privacy copy
-│   ├── layouts/BaseLayout.astro   head, metadata, header, footer, analytics
+│   ├── layouts/BaseLayout.astro   head, metadata, header, footer, observability
 │   ├── pages/                     nine routes, 404, robots.txt endpoint
 │   ├── scripts/
 │   │   ├── ui.ts                  header, menu, motion control, reveals
@@ -82,7 +82,7 @@ The value must be an absolute URL. It is used for canonical URLs, Open Graph URL
 - **Contact channels:** `phone` and `whatsapp` are `null` until a real number is verified. When a channel exists, `tel:` and WhatsApp actions are rendered automatically, and the WhatsApp link opens a short generic message. No placeholder number exists anywhere in the project.
 - **Treatments:** `src/data/treatments.ts` is the single source for the three treatment pages. All three share the same section order (addresses, assessment, options, timing and cost, follow-up, FAQs).
 - **Doctor data:** `src/data/doctor.ts` intentionally has an empty qualifications list and an empty verified timeline. Do not add inferred dates or expand "PG" into a qualification.
-- **Privacy and analytics:** `src/data/privacy.ts` describes the implemented behaviour, not a template. It currently discloses cookieless Vercel Web Analytics, the absence of patient accounts and enquiry forms, and what happens when a Call or WhatsApp link is followed. Update it if hosting, analytics or contact behaviour changes.
+- **Privacy and observability:** `src/data/privacy.ts` describes the implemented behaviour, not a template. It currently discloses Vercel Web Analytics and Speed Insights, the absence of patient accounts and enquiry forms, and what happens when a Call or WhatsApp link is followed. Update it if hosting, observability or contact behaviour changes.
 
 ## 3D and motion
 
@@ -108,7 +108,7 @@ Measured on the production build with a fresh browser context (Edge headless, lo
 | `/about` | ~91 KB | none |
 | `/contact` | ~90 KB | none |
 
-Gzip build sizes: scene chunk 138.2 KB, GSAP 26.5 KB, ScrollTrigger 17 KB, CSS 7.8 KB, fonts 57.3 KB, crest 18.4 KB. Raw build sizes are listed in `docs/REVIEW.md`. Both measurements are far below the 1 MB initial and 3 MB deferred targets. These figures exclude Vercel Analytics, which is rendered only in Vercel builds.
+Gzip build sizes: scene chunk 138.2 KB, GSAP 26.5 KB, ScrollTrigger 17 KB, CSS 7.8 KB, fonts 57.3 KB, crest 18.4 KB. Raw build sizes are listed in `docs/REVIEW.md`. Both measurements are far below the 1 MB initial and 3 MB deferred targets. These figures exclude Vercel Analytics and Speed Insights, which are rendered only in Vercel builds.
 
 ## Accessibility notes
 
@@ -117,21 +117,23 @@ Gzip build sizes: scene chunk 138.2 KB, GSAP 26.5 KB, ScrollTrigger 17 KB, CSS 7
 - Visible focus rings, 44 × 44 CSS pixel controls, keyboard support for tabs and the mobile menu (including Escape and focus return).
 - Automated check results are recorded in `docs/REVIEW.md`. They are not a substitute for manual screen-reader testing.
 
-## Vercel Analytics
+## Vercel Analytics and Speed Insights
 
-The Astro build of Vercel Web Analytics is imported in `src/layouts/BaseLayout.astro`:
+Both Astro components are imported in `src/layouts/BaseLayout.astro`:
 
 ```astro
 import Analytics from '@vercel/analytics/astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
 ...
-{analyticsEnabled && <Analytics />}
+{vercelObservabilityEnabled && <Analytics />}
+{vercelObservabilityEnabled && <SpeedInsights />}
 ```
 
-- This is the Astro component, not `@vercel/analytics/next`. The site is Astro, not Next.js or React, so the Next.js snippet does not apply.
-- `analyticsEnabled` is true only when the build runs with `VERCEL=1`, which Vercel sets. Local builds and previews therefore do not request `/_vercel/insights/script.js` and do not produce a 404.
-- On a Vercel deployment, enable Web Analytics in the project dashboard. The platform serves the insights endpoint.
-- Vercel Analytics is cookieless and is not used for advertising or cross-site tracking. The privacy page and homepage FAQ have been updated. No patient information is collected.
-- Analytics is deliberately not loaded on non-Vercel hosts because the endpoint is Vercel-specific.
+- These are the Astro components, not the Next.js/React imports. The site is Astro, so `@vercel/analytics/next` and React components do not apply.
+- `vercelObservabilityEnabled` is true only when the build runs with `VERCEL=1`, which Vercel sets. Local builds and previews therefore do not request `/_vercel/insights/script.js` or `/_vercel/speed-insights/script.js` and do not produce 404s.
+- On a Vercel deployment, enable Web Analytics and Speed Insights in the project dashboard. The platform serves both endpoints.
+- Both are used for aggregate traffic and performance reporting, not advertising or cross-site tracking. Web Analytics is cookieless. The privacy page and homepage FAQ disclose both. No patient information is collected.
+- They are deliberately not loaded on non-Vercel hosts because the endpoints are Vercel-specific.
 
 ## Deployment
 
@@ -141,7 +143,7 @@ import Analytics from '@vercel/analytics/astro';
 - Build command: `npm run build`.
 - Output directory: `dist`.
 - Set the verified `SITE_URL` for canonical URLs and the sitemap when the domain is confirmed.
-- Enable Web Analytics in the Vercel project after the first deployment.
+- Enable Web Analytics and Speed Insights in the Vercel project after the first deployment.
 
 The existing `weblazetech/Yali-3D` repository is public; make it private or move the internal review docs if they should not be public.
 

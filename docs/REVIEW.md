@@ -1,7 +1,7 @@
 # Internal review, pending content and release checklist
 
 Status: **review-only build, not for public publication.**
-Build date: 5 November 2026.
+Build date: 6 November 2026.
 Source: repository root (workspace `website/`). Production build: `dist/`. Local preview: `npm run preview`.
 
 This document is internal. It is not rendered on the website and must not be treated as clinical approval.
@@ -32,7 +32,7 @@ Two items are public-launch blockers on their own:
 | Authentic photography of Dr. Reddy and the clinic | Missing. | Supplied, approved photography. The current typographic introduction is deliberate; no stock or generated person or interior has been used. | Clinic |
 | Reviews and testimonials | None. | Authentic, attributable reviews earned by Yali. Prior-practice reviews must not be presented as Yali's. No reviews section is present. | Clinic |
 | Production domain and deployment authorisation | Open. | Verified base URL for `SITE_URL`, hosting decision, and explicit authorisation to publish. | Clinic |
-| Privacy, hosting and analytics disclosure | Implemented, approval pending. | Confirm the hosting provider, enable Vercel Web Analytics in the project, and approve the privacy wording (including any local consent requirement). Current `src/data/privacy.ts` discloses cookieless Vercel Analytics. | Clinic / web |
+| Privacy, hosting and observability disclosure | Implemented, approval pending. | Confirm the hosting provider, enable Vercel Web Analytics and Speed Insights in the project, and approve the privacy wording (including any local consent requirement). Current `src/data/privacy.ts` discloses both services. | Clinic / web |
 | Repository visibility | Public. | Decide whether the source and internal review docs should remain public; make the repository private or move `docs/` before public publication. | Clinic / web |
 | Opening announcement wording | Draft. | Approve the exact prelaunch/open wording. Current wording is "Opening in Hyderabad." only. | Clinic |
 
@@ -55,7 +55,7 @@ Two items are public-launch blockers on their own:
 - No implant volume, retention rate, success rate, or other numerical claims.
 - No patient testimonials, review scores, or reviews from a prior practice.
 - No clinic interior, doctor portrait, or patient imagery.
-- No advertising scripts, tracking pixels, or cookies set by Yali. Cookieless Vercel Web Analytics is included for Vercel builds only; see section 7.7.
+- No advertising scripts, tracking pixels, or cookies set by Yali. Vercel Web Analytics and Speed Insights are included for Vercel builds only; see section 7.7.
 - No forms, patient accounts, payments, scheduling integration, blog, or second language.
 - No clinical claim of "painless", "guaranteed", or accredited care.
 - "International-standard treatment" is written as an ambition and explicitly says it is an aim, not an accreditation.
@@ -72,7 +72,7 @@ Two items are public-launch blockers on their own:
 | `/about` | Complete review build | Purpose, doctor biography (confirmed material only), care philosophy, opening status. Qualifications and timeline omitted. |
 | `/your-visit` | Complete review build | Five stages, preparation list, questions worth asking. Hygiene/material practices omitted pending confirmation. |
 | `/contact` | Complete review build | Honest prelaunch status, no fake contact actions, address/hours placeholders, urgent-concern guidance. |
-| `/privacy` | Complete review build | Describes actual implemented behaviour, including cookieless Vercel Analytics; no invented retention claims. |
+| `/privacy` | Complete review build | Describes actual implemented behaviour, including Vercel Web Analytics and Speed Insights; no invented retention claims. |
 | `/404` | Complete review build | Helpful fallback with `noindex`. |
 
 ## 6. Interactions and states
@@ -99,8 +99,8 @@ Environment: Windows, Node 24.16.0, Astro 7.4.4, Edge 141 headless via Playwrigh
 | `npm run build` | 10 static pages built into `dist/` (nine routes, 404, robots.txt). |
 | Build with `SITE_URL=https://example.org` | Canonical URLs, `og:url`, Organization JSON-LD, `sitemap-index.xml` and robots sitemap line generated. |
 | Final build without `SITE_URL` | No canonical, `og:url`, sitemap, or invented domain. Expected for review. |
-| Default production build | No `<vercel-analytics>` markup and no analytics request. Clean local preview. |
-| Build with `VERCEL=1` | `<vercel-analytics>` and the analytics bootstrap are present on every page. This is the build shape Vercel produces. |
+| Default production build | No `<vercel-analytics>` or `<vercel-speed-insights>` markup and no observability requests. Clean local preview. |
+| Build with `VERCEL=1` | Both observability elements and their bootstrap scripts are present on every page. This is the build shape Vercel produces. |
 
 ### 7.2 Route, link and layout sweep
 
@@ -179,7 +179,7 @@ Largest build assets (raw / gzip):
 - Crest PNG at 128 px: 18.8 KB (header and footer).
 - Fallback stills: 7.3–31.5 KB each; only route-relevant stills load.
 
-Both targets pass: initial payload below 1 MB and deferred 3D below 3 MB per route. These figures exclude Vercel Analytics, which is absent from non-Vercel builds. The analytics bootstrap adds a small inline script only to Vercel builds; the Vercel-hosted insights script itself was not measured locally.
+Both targets pass: initial payload below 1 MB and deferred 3D below 3 MB per route. These figures exclude Vercel Web Analytics and Speed Insights, which are absent from non-Vercel builds. The observability bootstrap adds a small inline script only to Vercel builds; the Vercel-hosted scripts themselves were not measured locally.
 
 ### 7.6 Prelaunch and open-state rendering
 
@@ -187,14 +187,14 @@ Both targets pass: initial payload below 1 MB and deferred 3D below 3 MB per rou
 - Open state tested with **temporary fixture data** (state `open`, a non-real test number, test address/hours/map) and then removed. In that build: `tel:` and `wa.me` links rendered, the contact page showed the test address/hours and directions link, the homepage status changed, footer details rendered, and no "Opening in Hyderabad" copy remained on the homepage or about page.
 - The fixture was reverted, the site rebuilt, and the final `dist/` was checked for the fixture strings and number. None are present.
 
-### 7.7 Vercel Analytics
+### 7.7 Vercel Analytics and Speed Insights
 
-- `@vercel/analytics@2.0.1` is imported in `src/layouts/BaseLayout.astro` using the Astro component (`@vercel/analytics/astro`). The Next.js component in the original instruction is not applicable to this Astro site.
-- Rendering is gated on `import.meta.env.VERCEL`. The default build contains no `<vercel-analytics>` element, no analytics JavaScript, and makes no analytics request. This was verified in the local preview with Playwright; there were no console errors.
-- A build with `VERCEL=1` contains the `<vercel-analytics>` element and bootstrap on every page. This is the shape a Vercel build produces; no Vercel deployment was created.
-- The privacy page and homepage FAQ were updated to disclose cookieless Vercel Analytics. The privacy page explicitly says the service is not used for advertising or cross-site tracking and does not identify patients.
-- A local preview of a `VERCEL=1` build would request `/_vercel/insights/script.js`, which exists only on Vercel. That is why the local review build excludes the component rather than logging a 404.
-- Not tested: actual analytics collection on Vercel, the Vercel dashboard, and any jurisdictional consent requirement.
+- `@vercel/analytics@2.0.1` and `@vercel/speed-insights@2.1.0` are imported in `src/layouts/BaseLayout.astro` using their Astro components (`@vercel/analytics/astro`, `@vercel/speed-insights/astro`). The Next.js/React imports in the original instructions are not applicable to this Astro site.
+- Rendering is gated on `import.meta.env.VERCEL`. The default build contains no `<vercel-analytics>` or `<vercel-speed-insights>` element, no observability JavaScript, and makes no observability request. This was verified in the local preview with Playwright; there were no console errors.
+- A build with `VERCEL=1` contains both elements and their bootstrap scripts on every page. This is the shape a Vercel build produces; no Vercel deployment was created.
+- The privacy page and homepage FAQ were updated to disclose both services. The privacy page says Web Analytics is cookieless, that both are used for traffic and performance reporting, and that neither is used for advertising, cross-site tracking, or patient identification.
+- A local preview of a `VERCEL=1` build would request `/_vercel/insights/script.js` and `/_vercel/speed-insights/script.js`, which exist only on Vercel. That is why the local review build excludes both components rather than logging 404s.
+- Not tested: actual analytics or performance data on Vercel, the Vercel dashboard, and any jurisdictional consent requirement.
 
 ## 8. Content and claims audit
 
@@ -217,7 +217,7 @@ Both targets pass: initial payload below 1 MB and deferred 3D below 3 MB per rou
 - The crown story view and implant exploded view are explanatory illustrations, not anatomical diagrams. Labels and sequencing require review.
 - The print stylesheet is minimal and was not verified.
 - A live change of the operating-system reduced-motion preference while the page is open was not exercised; the control and initial OS detection were tested.
-- No real private Sites preview was deployed. The GitHub repository is public; no Vercel deployment or analytics collection has been tested.
+- No real private Sites preview was deployed. The GitHub repository is public; no Vercel deployment or observability collection has been tested.
 
 ## 10. Review checklist
 
@@ -232,8 +232,8 @@ Both targets pass: initial payload below 1 MB and deferred 3D below 3 MB per rou
 - [ ] Confirm the address, neighbourhood, hours, map and opening status.
 - [ ] Confirm hygiene and material-selection practices, or keep them omitted.
 - [ ] Supply authentic doctor/clinic photography if it is to be used.
-- [ ] Approve the privacy page, Vercel Analytics disclosure, and hosting details.
-- [ ] Enable Vercel Web Analytics after deployment and verify data collection.
+- [ ] Approve the privacy page, Vercel Analytics and Speed Insights disclosures, and hosting details.
+- [ ] Enable Vercel Web Analytics and Speed Insights after deployment and verify data collection.
 - [ ] Set the verified `SITE_URL` and confirm the production domain.
 - [ ] Run manual browser/device and screen-reader checks.
 - [ ] Obtain explicit authorisation before public publication.
